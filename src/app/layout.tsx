@@ -6,29 +6,29 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'PizzaCraft - Artisan Pizzeria',
-  description: 'Order delicious pizzas online',
+  title: 'PizzaCraft - Artisan Pizzeria | Order Delicious Pizzas Online',
+  description: 'PizzaCraft is your go-to destination for artisan pizzas crafted with premium ingredients. Browse our curated menu, customize your order, add pizzas to your cart, and enjoy automatic discounts. Track your orders, explore data visualizations, and create custom pizzas. Experience the perfect blend of taste and convenience.',
   icons: {
-    icon: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/icon.png',
+    apple: '/icon.png',
   },
   openGraph: {
     title: 'PizzaCraft - Artisan Pizzeria',
-    description: 'Order delicious pizzas online. Craft your perfect pizza with premium ingredients.',
+    description: 'Craft your perfect pizza with premium ingredients. Browse our menu, customize your order, and enjoy delicious pizzas with automatic discounts. Order online and track your orders with our modern pizza ordering platform.',
     type: 'website',
     images: [
       {
         url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'PizzaCraft - Artisan Pizzeria',
+        alt: 'PizzaCraft - Artisan Pizzeria - Order Delicious Pizzas Online',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'PizzaCraft - Artisan Pizzeria',
-    description: 'Order delicious pizzas online. Craft your perfect pizza with premium ingredients.',
+    description: 'Craft your perfect pizza with premium ingredients. Browse our menu, customize your order, and enjoy delicious pizzas with automatic discounts.',
     images: ['/opengraph-image'],
   },
 };
