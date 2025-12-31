@@ -4,8 +4,11 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, Minus, Leaf, Sparkles } from 'lucide-react';
-import { usePizza } from '@/contexts/PizzaContext';
-import { useCart } from '@/contexts/CartContext';
+import { useGetPizzaByIdQuery, useGetPizzasQuery } from '@/store/api/pizzaApi';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { selectCartItemQuantity, addItem, increment, decrement } from '@/store/slices/cartSlice';
+import { openCart } from '@/store/slices/cartOpenerSlice';
+import { addToast } from '@/store/slices/toastSlice';
 import { Button, SpicyBadge, CategoryBadge } from '@/components/common';
 import { formatCurrency } from '@/utils/format';
 import { cn } from '@/utils/cn';
@@ -14,15 +17,28 @@ import { fadeUpItem, staggerContainer } from '@/utils/animations';
 export default function PizzaDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { getPizzaById, pizzas } = usePizza();
-  const { addItem, increment, decrement, getItemQuantity } = useCart();
-
-  const pizza = getPizzaById(params.id as string);
+  const dispatch = useAppDispatch();
+  const { data: pizza, isLoading } = useGetPizzaByIdQuery(params.id as string);
+  const { data: pizzas = [] } = useGetPizzasQuery();
+  
+  // Call hook unconditionally at the top level (Rules of Hooks)
+  const cartQuantity = useAppSelector(selectCartItemQuantity(pizza?.id || ''));
 
   // Get related pizzas (same category, excluding current pizza)
   const relatedPizzas = pizzas
     .filter((p) => p.id !== pizza?.id && p.category === pizza?.category)
     .slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-4xl mb-4">🍕</p>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!pizza) {
     return (
@@ -36,8 +52,6 @@ export default function PizzaDetailsPage() {
       </div>
     );
   }
-
-  const cartQuantity = getItemQuantity(pizza.id);
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
@@ -135,7 +149,7 @@ export default function PizzaDetailsPage() {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => decrement(pizza.id)}
+                      onClick={() => dispatch(decrement(pizza.id))}
                       className="w-10 h-10 rounded-lg bg-slate-700 hover:bg-red-500/20 hover:text-red-400 text-white flex items-center justify-center transition-colors"
                     >
                       <Minus className="w-5 h-5" />
@@ -146,13 +160,19 @@ export default function PizzaDetailsPage() {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => increment(pizza.id)}
+                      onClick={() => dispatch(increment(pizza.id))}
                       className="w-10 h-10 rounded-lg bg-orange-500 hover:bg-orange-400 text-white flex items-center justify-center transition-colors"
                     >
                       <Plus className="w-5 h-5" />
                     </motion.button>
                   </div>
-                  <Button variant="primary" onClick={() => router.push('/')} fullWidth>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      dispatch(openCart());
+                    }}
+                    fullWidth
+                  >
                     View Cart
                   </Button>
                 </div>
@@ -161,7 +181,16 @@ export default function PizzaDetailsPage() {
                   variant="primary"
                   size="lg"
                   fullWidth
-                  onClick={() => addItem(pizza.id, 1)}
+                  onClick={() => {
+                    dispatch(addItem({ pizzaId: pizza.id, quantity: 1 }));
+                    dispatch(
+                      addToast({
+                        type: 'success',
+                        message: `Added ${pizza.name} to cart! 🍕`,
+                        duration: 3000,
+                      })
+                    );
+                  }}
                   leftIcon={<Plus className="w-5 h-5" />}
                 >
                   Add to Cart
@@ -231,7 +260,14 @@ export default function PizzaDetailsPage() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              addItem(relatedPizza.id, 1);
+                              dispatch(addItem({ pizzaId: relatedPizza.id, quantity: 1 }));
+                              dispatch(
+                                addToast({
+                                  type: 'success',
+                                  message: `Added ${relatedPizza.name} to cart! 🍕`,
+                                  duration: 3000,
+                                })
+                              );
                             }}
                             leftIcon={<Plus className="w-4 h-4" />}
                           >

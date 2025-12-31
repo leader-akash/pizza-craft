@@ -3,17 +3,18 @@
 import { Pizza } from '@/types';
 import { PizzaCard } from './PizzaCard';
 import { NoPizzasFound } from '@/components/common';
-import { useFilter } from '@/contexts/FilterContext';
+import { useAppDispatch } from '@/store/hooks';
+import { resetFilters } from '@/store/slices/filterSlice';
 
 interface PizzaListProps {
   pizzas: Pizza[];
 }
 
 export const PizzaList = ({ pizzas }: PizzaListProps) => {
-  const { resetFilters } = useFilter();
+  const dispatch = useAppDispatch();
 
   if (pizzas.length === 0) {
-    return <NoPizzasFound onReset={resetFilters} />;
+    return <NoPizzasFound onReset={() => dispatch(resetFilters())} />;
   }
 
   return (

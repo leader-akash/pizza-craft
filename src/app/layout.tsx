@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { AppProviders } from '@/contexts';
+import { ReduxProvider } from '@/store/ReduxProvider';
 import { Header, Footer } from '@/components/layout';
+import { ToastProvider } from '@/components/common/ToastProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -39,13 +40,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-slate-950 text-white" suppressHydrationWarning>
-        <AppProviders>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </AppProviders>
+        <ReduxProvider>
+          <ToastProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ToastProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

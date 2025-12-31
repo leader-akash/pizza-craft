@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { Plus, X, ArrowLeft, ChefHat, Zap, Settings, Image as ImageIcon, Sparkles, Leaf } from 'lucide-react';
 import { Button, Input, TextArea, Select } from '@/components/common';
-import { usePizza } from '@/contexts/PizzaContext';
+import { useAddPizzaMutation } from '@/store/api/pizzaApi';
 import { PizzaCategory } from '@/types';
 import { cn } from '@/utils/cn';
 import { fadeUpItem } from '@/utils/animations';
@@ -51,8 +51,7 @@ const defaultImages = [
 
 export default function AddPizzaPage() {
   const router = useRouter();
-  const { addPizza } = usePizza();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addPizza, { isLoading: isSubmitting }] = useAddPizzaMutation();
 
   const {
     register,
@@ -90,7 +89,6 @@ export default function AddPizzaPage() {
   const spicyLevel = watch('spicyLevel');
 
   const onSubmit = async (data: PizzaFormData) => {
-    setIsSubmitting(true);
     try {
       const newPizza = {
         id: uuidv4(),
@@ -105,12 +103,10 @@ export default function AddPizzaPage() {
         spicyLevel: data.spicyLevel as 0 | 1 | 2 | 3,
       };
 
-      addPizza(newPizza);
+      await addPizza(newPizza).unwrap();
       router.push('/');
     } catch (error) {
       console.error('Error adding pizza:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

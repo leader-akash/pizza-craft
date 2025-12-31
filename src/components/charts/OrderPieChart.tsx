@@ -2,19 +2,20 @@
 
 import { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { useCart } from '@/contexts/CartContext';
-import { usePizza } from '@/contexts/PizzaContext';
+import { useAppSelector } from '@/store/hooks';
+import { useGetPizzasQuery } from '@/store/api/pizzaApi';
+import { selectCartItems, getOrderItems, getFinalTotal } from '@/store/slices/cartSlice';
 import { OrderPieData } from '@/types';
 import { formatCurrency } from '@/utils/format';
 
 const COLORS = ['#f97316', '#fb923c', '#fdba74', '#fbbf24', '#f59e0b', '#d97706', '#ea580c', '#c2410c'];
 
 export const OrderPieChart = () => {
-  const { pizzas } = usePizza();
-  const { getOrderItems, getFinalTotal } = useCart();
+  const { data: pizzas = [] } = useGetPizzasQuery();
+  const cartItems = useAppSelector(selectCartItems);
 
   const chartData: OrderPieData[] = useMemo(() => {
-    const orderItems = getOrderItems(pizzas);
+    const orderItems = getOrderItems(cartItems, pizzas);
     if (orderItems.length === 0) {
       return [];
     }
@@ -24,9 +25,9 @@ export const OrderPieChart = () => {
       value: item.finalPrice,
       color: COLORS[index % COLORS.length],
     }));
-  }, [pizzas, getOrderItems]);
+  }, [cartItems, pizzas]);
 
-  const total = getFinalTotal(pizzas);
+  const total = getFinalTotal(cartItems, pizzas);
 
   if (chartData.length === 0) {
     return (

@@ -6,8 +6,21 @@ import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
 import { overlayVariants, slideInFromRight } from '@/utils/animations';
 import { Button, EmptyCart, QuantitySelector } from '@/components/common';
-import { useCart } from '@/contexts/CartContext';
-import { usePizza } from '@/contexts/PizzaContext';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { useGetPizzasQuery } from '@/store/api/pizzaApi';
+import {
+  selectCartItems,
+  selectCartItemCount,
+  selectIsCartEmpty,
+  getOrderItems,
+  getSubtotal,
+  getTotalDiscount,
+  getFinalTotal,
+  increment,
+  decrement,
+  removeItem,
+  clearCart,
+} from '@/store/slices/cartSlice';
 import { OrderConfirmationModal } from './OrderConfirmationModal';
 import { useState } from 'react';
 
@@ -17,26 +30,17 @@ interface CartSidebarProps {
 }
 
 export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
-  const { pizzas } = usePizza();
-  const {
-    items,
-    itemCount,
-    getOrderItems,
-    getSubtotal,
-    getTotalDiscount,
-    getFinalTotal,
-    isCartEmpty,
-    increment,
-    decrement,
-    removeItem,
-    clearCart,
-  } = useCart();
+  const { data: pizzas = [] } = useGetPizzasQuery();
+  const items = useAppSelector(selectCartItems);
+  const itemCount = useAppSelector(selectCartItemCount);
+  const isCartEmpty = useAppSelector(selectIsCartEmpty);
+  const dispatch = useAppDispatch();
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const orderItems = getOrderItems(pizzas);
-  const subtotal = getSubtotal(pizzas);
-  const totalDiscount = getTotalDiscount(pizzas);
-  const finalTotal = getFinalTotal(pizzas);
+  const orderItems = getOrderItems(items, pizzas);
+  const subtotal = getSubtotal(items, pizzas);
+  const totalDiscount = getTotalDiscount(items, pizzas);
+  const finalTotal = getFinalTotal(items, pizzas);
 
   const handleCheckout = () => {
     setShowConfirmation(true);
@@ -89,7 +93,7 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={clearCart}
+                      onClick={() => dispatch(clearCart())}
                       className="p-2.5 rounded-xl bg-slate-800/80 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -137,7 +141,7 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                         >
                           <div className="flex gap-4 p-4">
                             {/* Image */}
-                            <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700/50">
+                            <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-slate-700/50">
                               <img
                                 src={item.pizza.imageUrl}
                                 alt={item.pizza.name}
@@ -154,7 +158,7 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
-                                  onClick={() => removeItem(item.pizza.id)}
+                                  onClick={() => dispatch(removeItem(item.pizza.id))}
                                   className="p-1.5 text-slate-400 hover:text-red-400 transition-colors"
                                 >
                                   <X className="w-4 h-4" />
@@ -168,8 +172,8 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                               <div className="flex items-center justify-between mt-4">
                                 <QuantitySelector
                                   quantity={item.quantity}
-                                  onIncrement={() => increment(item.pizza.id)}
-                                  onDecrement={() => decrement(item.pizza.id)}
+                                  onIncrement={() => dispatch(increment(item.pizza.id))}
+                                  onDecrement={() => dispatch(decrement(item.pizza.id))}
                                   size="sm"
                                 />
                                 <div className="text-right">

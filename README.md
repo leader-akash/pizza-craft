@@ -19,7 +19,7 @@ A modern, full-featured pizza ordering application built with Next.js, TypeScrip
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **State Management**: React Context API
+- **State Management**: Redux Toolkit with RTK Query
 - **Form Handling**: React Hook Form with Zod validation
 - **Animations**: Framer Motion
 - **Charts**: Recharts
@@ -42,12 +42,16 @@ pizza-craft/
 │   │   ├── common/              # Reusable UI components
 │   │   ├── layout/              # Layout components
 │   │   └── pizza/               # Pizza-related components
-│   ├── contexts/               # React Context providers
-│   │   ├── CartContext.tsx     # Cart state management
-│   │   ├── FilterContext.tsx   # Filter state management
-│   │   ├── OrderContext.tsx    # Order state management
-│   │   ├── PizzaContext.tsx    # Pizza state management
-│   │   └── index.tsx           # Combined providers
+│   ├── store/                  # Redux store configuration
+│   │   ├── api/                # RTK Query API slices
+│   │   │   ├── pizzaApi.ts     # Pizza API endpoints
+│   │   │   └── orderApi.ts     # Order API endpoints
+│   │   ├── slices/             # Redux slices for local state
+│   │   │   ├── cartSlice.ts    # Cart state management
+│   │   │   └── filterSlice.ts  # Filter state management
+│   │   ├── hooks.ts            # Typed Redux hooks
+│   │   ├── index.ts            # Store configuration
+│   │   └── ReduxProvider.tsx   # Redux Provider component
 │   ├── data/                   # Static data
 │   │   └── pizzas.json         # Initial pizza data
 │   ├── types/                  # TypeScript type definitions
@@ -134,12 +138,23 @@ Orders are stored in browser localStorage (simulated backend). Each order includ
 
 ## State Management
 
-The application uses React Context API for state management:
+The application uses Redux Toolkit with RTK Query for state management:
 
-- **PizzaContext**: Manages the pizza menu (add, update, remove pizzas)
-- **CartContext**: Manages shopping cart items and calculations
-- **OrderContext**: Manages order history and persistence
-- **FilterContext**: Manages filtering and sorting state
+- **RTK Query APIs**: 
+  - **pizzaApi**: Manages pizza data (CRUD operations) with automatic caching and refetching
+  - **orderApi**: Manages order history with localStorage persistence
+- **Redux Slices**:
+  - **cartSlice**: Manages shopping cart items and calculations (local state)
+  - **filterSlice**: Manages filtering and sorting state (local state)
+
+### Why RTK Query?
+
+- **Automatic Caching**: RTK Query automatically caches API responses and manages cache invalidation
+- **Optimistic Updates**: Built-in support for optimistic UI updates
+- **Request Deduplication**: Automatically deduplicates identical requests
+- **TypeScript Support**: Excellent TypeScript support with type inference
+- **DevTools Integration**: Full Redux DevTools support for debugging
+- **Code Splitting**: Better code organization with API slices
 
 ## Testing
 
@@ -163,12 +178,13 @@ npm run test:coverage
 
 ## Design Decisions
 
-### Why Context API instead of Redux?
+### Why RTK Query instead of Context API?
 
-- Simpler setup and less boilerplate
-- Sufficient for this application's state management needs
-- Easier to understand and maintain
-- Better integration with Next.js App Router
+- **Better Performance**: Automatic caching and request deduplication reduce unnecessary re-renders
+- **Scalability**: Better suited for applications that will grow and need more complex state management
+- **Developer Experience**: Excellent TypeScript support and Redux DevTools integration
+- **Data Fetching**: Built-in data fetching, caching, and synchronization capabilities
+- **Code Organization**: Clear separation between server state (RTK Query) and client state (Redux slices)
 
 ### Why Next.js App Router?
 
@@ -218,24 +234,3 @@ npm run test:coverage
 - Order statistics
 - Order details with items
 - Delete orders functionality
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## License
-
-This project is for demonstration purposes.
-
-## Contributing
-
-This is a portfolio/demonstration project. Feel free to fork and modify for your own use.
-
-## Acknowledgments
-
-- Pizza data and images from Unsplash
-- Icons from Lucide React
-- UI inspiration from modern e-commerce applications

@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { Menu, X, ShoppingCart, Plus, Home, History, Search } from 'lucide-react';
+import { Menu, X, ShoppingCart, Plus, Home, History } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { useCart } from '@/contexts/CartContext';
-import { useFilter } from '@/contexts/FilterContext';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { selectCartItemCount } from '@/store/slices/cartSlice';
+import { selectShouldOpenCart, closeCart } from '@/store/slices/cartOpenerSlice';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 
 const navLinks = [
@@ -18,11 +19,11 @@ const navLinks = [
 
 export const Header = () => {
   const pathname = usePathname();
-  const { itemCount } = useCart();
-  const { filters, setSearchQuery } = useFilter();
+  const itemCount = useAppSelector(selectCartItemCount);
+  const shouldOpenCart = useAppSelector(selectShouldOpenCart);
+  const dispatch = useAppDispatch();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -30,7 +31,13 @@ export const Header = () => {
     restDelta: 0.001,
   });
 
-  const isHomePage = pathname === '/';
+  // Listen to cart opener state
+  useEffect(() => {
+    if (shouldOpenCart) {
+      setIsCartOpen(true);
+      dispatch(closeCart());
+    }
+  }, [shouldOpenCart, dispatch]);
 
   return (
     <>
@@ -46,7 +53,7 @@ export const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.6 }}
@@ -63,28 +70,6 @@ export const Header = () => {
                 </span>
               </div>
             </Link>
-
-            {/* Center - Search Bar (Desktop) */}
-            {isHomePage && (
-              <div className="hidden lg:flex flex-1 max-w-lg mx-4 xl:mx-8">
-                <div className="relative w-full">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10" />
-                  <input
-                    type="text"
-                    value={filters.searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search pizzas, ingredients..."
-                    className={cn(
-                      'w-full pl-11 pr-10 py-2.5 rounded-xl',
-                      'bg-slate-800/90 backdrop-blur-sm border border-slate-700/50',
-                      'text-white text-sm placeholder:text-slate-500',
-                      'focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50',
-                      'transition-all duration-300'
-                    )}
-                  />
-                </div>
-              </div>
-            )}
 
             {/* Center - Navigation Links (Desktop) */}
             <div className="hidden lg:flex items-center gap-2">
@@ -123,18 +108,6 @@ export const Header = () => {
 
             {/* Right - Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Search Button (Mobile) */}
-              {isHomePage && (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setShowSearch(!showSearch)}
-                  className="lg:hidden p-2.5 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white transition-all"
-                >
-                  <Search className="w-5 h-5" />
-                </motion.button>
-              )}
-
               {/* Cart Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -165,33 +138,6 @@ export const Header = () => {
               </motion.button>
             </div>
           </div>
-
-          {/* Mobile Search */}
-          {isHomePage && showSearch && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden pb-4"
-            >
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10" />
-                <input
-                  type="text"
-                  value={filters.searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search pizzas, ingredients..."
-                  className={cn(
-                    'w-full pl-11 pr-10 py-2.5 rounded-xl',
-                    'bg-slate-800/90 backdrop-blur-sm border border-slate-700/50',
-                    'text-white text-sm placeholder:text-slate-500',
-                    'focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50',
-                    'transition-all duration-300'
-                  )}
-                />
-              </div>
-            </motion.div>
-          )}
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (

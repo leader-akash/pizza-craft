@@ -6,21 +6,23 @@ import { TrendingUp, Users, Pizza, DollarSign, Sparkles, ChevronDown, Clock, Awa
 import { PizzaFilters, PizzaList } from '@/components/pizza';
 import { PriceChart, OrderPieChart } from '@/components/charts';
 import { Badge } from '@/components/common';
-import { usePizza } from '@/contexts/PizzaContext';
-import { useFilter } from '@/contexts/FilterContext';
-import { useCart } from '@/contexts/CartContext';
+import { useGetPizzasQuery } from '@/store/api/pizzaApi';
+import { useAppSelector } from '@/store/hooks';
+import { selectFilters, getFilteredPizzas } from '@/store/slices/filterSlice';
+import { selectCartItems, selectCartItemCount, getFinalTotal } from '@/store/slices/cartSlice';
 import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
 import { staggerContainer, fadeUpItem } from '@/utils/animations';
 import { HeroBanner } from '@/components/hero';
 
 export default function Dashboard() {
-  const { pizzas } = usePizza();
-  const { getFilteredPizzas } = useFilter();
-  const { itemCount, getFinalTotal } = useCart();
+  const { data: pizzas = [] } = useGetPizzasQuery();
+  const filters = useAppSelector(selectFilters);
+  const cartItems = useAppSelector(selectCartItems);
+  const itemCount = useAppSelector(selectCartItemCount);
 
-  const filteredPizzas = getFilteredPizzas(pizzas);
-  const cartTotal = getFinalTotal(pizzas);
+  const filteredPizzas = getFilteredPizzas(pizzas, filters);
+  const cartTotal = getFinalTotal(cartItems, pizzas);
 
   // Generate random values only on client to avoid hydration mismatch
   const [pizzaAnimations, setPizzaAnimations] = useState<Array<{
@@ -48,162 +50,8 @@ export default function Dashboard() {
     <div className="min-h-screen">
       {/* Hero Banner */}
 
-<HeroBanner />
+      <HeroBanner />
 
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background Gradient */}
-        <div className="absolute inset-0 bg-linear-to-br from-slate-950 via-purple-950/30 to-orange-950/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,146,60,0.1),transparent_50%)]" />
-        
-        {/* Floating Pizza Animations */}
-        {[...Array(8)].map((_, i) => {
-          const positions = [
-            { left: '10%', top: '15%' },
-            { left: '30%', top: '20%' },
-            { left: '50%', top: '10%' },
-            { left: '70%', top: '25%' },
-            { left: '15%', top: '50%' },
-            { left: '40%', top: '55%' },
-            { left: '65%', top: '60%' },
-            { left: '80%', top: '45%' },
-          ];
-          const animation = pizzaAnimations[i];
-          
-          // Don't render until client-side values are ready
-          if (!animation) return null;
-          
-          return (
-            <motion.div
-              key={i}
-              className="absolute text-6xl sm:text-8xl opacity-20 pointer-events-none"
-              initial={{
-                rotate: animation.rotate,
-                y: 0,
-                x: 0,
-              }}
-              animate={{
-                y: [0, -30, 0, -20, 0],
-                x: [0, 20, 0, -15, 0],
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: animation.duration,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: animation.delay,
-              }}
-              style={positions[i]}
-            >
-              🍕
-            </motion.div>
-          );
-        })}
-
-        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto mt-4">
-          {/* Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-950/80 border border-orange-500/30 mb-6"
-          >
-            <Sparkles className="w-4 h-4 text-orange-400" />
-            <span className="text-sm text-white font-medium">Artisan Pizzas • Fresh Daily • Since 2024</span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6"
-          >
-            Craft Your{' '}
-            <br className="hidden sm:block" />
-            <span className="bg-linear-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">
-              Perfect Pizza
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-lg sm:text-xl lg:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed"
-          >
-            Experience the art of authentic pizza making with{' '}
-            <span className="text-orange-400 font-semibold">premium ingredients</span>, hand-tossed
-            dough, and recipes perfected over generations.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={scrollToMenu}
-              className="px-8 py-4 rounded-xl bg-linear-to-r from-orange-500 via-orange-600 to-red-500 text-white font-semibold text-lg shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all flex items-center gap-2"
-            >
-              <Sparkles className="w-5 h-5" />
-              Explore Menu
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/add-pizza'}
-              className="px-8 py-4 rounded-xl bg-slate-800/80 border border-slate-700 text-white font-semibold text-lg hover:bg-slate-700/80 transition-all flex items-center gap-2"
-            >
-              Today's Specials
-              <Sparkles className="w-5 h-5" />
-            </motion.button>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col items-center gap-2 text-slate-400 text-sm mt-10"
-          >
-            {/* <span>Scroll to explore</span> */}
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="mt-8"
-            >
-              <ChevronDown className="w-5 h-5" />
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Feature Icons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-8 sm:gap-12"
-        >
-          {[
-            { icon: <Clock className="w-6 h-6" />, label: '30 Min Delivery' },
-            { icon: <Award className="w-6 h-6" />, label: 'Premium Quality' },
-            { icon: <Flame className="w-6 h-6" />, label: 'Wood-Fired' },
-          ].map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1 + i * 0.1 }}
-              className="flex flex-col items-center gap-2"
-            >
-              <div className="text-3xl">{feature.icon}</div>
-              <span className="text-xs sm:text-sm text-slate-400 text-center">{feature.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
 
       {/* Stats Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
@@ -360,7 +208,7 @@ export default function Dashboard() {
                   </Badge>
                 </div>
               </div>
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <motion.div
                   animate={{
                     scale: [1, 1.1, 1],
