@@ -41,6 +41,32 @@ const toastStyles = {
   },
 };
 
+const toastVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 50, 
+    scale: 0.9,
+  },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+  exit: { 
+    opacity: 0, 
+    y: 20, 
+    scale: 0.9,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
 export const Toast = ({ toast, onRemove }: ToastProps) => {
   const Icon = toastIcons[toast.type];
   const styles = toastStyles[toast.type];
@@ -57,19 +83,33 @@ export const Toast = ({ toast, onRemove }: ToastProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -50, scale: 0.8, x: -20 }}
-      animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.8, x: 20, transition: { duration: 0.2 } }}
-      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      layout
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      variants={toastVariants}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-md',
-        'min-w-[320px] max-w-md shadow-xl',
-        styles.bg
+        'flex items-center gap-3 px-5 py-4',
+        'bg-slate-900/95 backdrop-blur-xl',
+        'border rounded-2xl shadow-2xl',
+        'min-w-[320px] max-w-md',
+        styles.bg,
       )}
     >
-      <div className={cn('shrink-0', styles.icon)}>
-        <Icon className="w-5 h-5" />
-      </div>
+      <motion.div
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ delay: 0.1, type: 'spring', stiffness: 500 }}
+        className={cn(
+          'flex items-center justify-center w-10 h-10 rounded-xl',
+          toast.type === 'success' && 'bg-emerald-500/20',
+          toast.type === 'error' && 'bg-red-500/20',
+          toast.type === 'info' && 'bg-blue-500/20',
+          toast.type === 'warning' && 'bg-amber-500/20'
+        )}
+      >
+        <Icon className={cn('w-5 h-5', styles.icon)} />
+      </motion.div>
       <div className="flex-1 min-w-0">
         <p className={cn('text-sm font-semibold', styles.text)}>{toast.message}</p>
         {toast.type === 'success' && toast.message.includes('cart') && (

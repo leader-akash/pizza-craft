@@ -23,7 +23,7 @@ import { Button } from '@/components/common';
 const categories: { value: PizzaCategory | 'all'; label: string; icon: string }[] = [
   { value: 'all', label: 'All', icon: '🍕' },
   { value: 'classic', label: 'Classic', icon: '🇮🇹' },
-  { value: 'meat', label: 'Meat', icon: '🥩' },
+  { value: 'meat', label: 'Non veg', icon: '🍗' },
   { value: 'vegetarian', label: 'Vegetarian', icon: '🥗' },
   { value: 'specialty', label: 'Specialty', icon: '✨' },
 ];
@@ -182,7 +182,7 @@ export const PizzaFilters = () => {
                 Dietary
               </label>
               <select
-                value={filters.isVegetarian === null ? 'all' : filters.isVegetarian ? 'veg' : 'non-veg'}
+                value={filters.isVegetarian === null ? 'all' : filters.isVegetarian ? 'veg' : 'meat'}
                 onChange={(e) => {
                   const value = e.target.value;
                   dispatch(setVegetarian(value === 'all' ? null : value === 'veg'));
@@ -191,7 +191,7 @@ export const PizzaFilters = () => {
               >
                 <option value="all">All</option>
                 <option value="veg">Vegetarian</option>
-                <option value="non-veg">Non-Vegetarian</option>
+                <option value="meat">meatetarian</option>
               </select>
             </div>
 

@@ -110,7 +110,7 @@ export const Header = () => {
             {/* Right - Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Theme Toggle */}
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               
               {/* Cart Button */}
               <motion.button

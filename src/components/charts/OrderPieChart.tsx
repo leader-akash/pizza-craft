@@ -43,7 +43,7 @@ export const OrderPieChart = () => {
   return (
     <div className="rounded-2xl bg-linear-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 p-6 h-[400px] flex flex-col">
       <h3 className="text-xl font-bold text-white mb-4">Order Breakdown</h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={290}>
         <PieChart>
           <Pie
             data={chartData}
@@ -71,7 +71,7 @@ export const OrderPieChart = () => {
           <Legend />
         </PieChart>
       </ResponsiveContainer>
-      <div className="mt-4 text-center">
+      <div className="mt-0 text-center">
         <p className="text-sm text-slate-400">Total: {formatCurrency(total)}</p>
       </div>
     </div>

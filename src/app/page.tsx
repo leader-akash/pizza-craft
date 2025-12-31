@@ -46,6 +46,19 @@ export default function Dashboard() {
     document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const promotionalBadgeClass = 'bg-white/20 text-white border-transparent '
+
+  const badges = [
+    // {
+    //   label: "Auto-applied at checkout",
+    //   icon: "🎉",
+    // },
+    {
+      label: "Save up to 10%",
+      icon: "💰",
+    },
+  ]
+
   return (
     <div className="min-h-screen">
       {/* Hero Banner */}
@@ -177,7 +190,7 @@ export default function Dashboard() {
       </section>
 
       {/* Promotional Banner */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 my-8">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 flex justify-center !m-8">
         <div className="w-full p-4 mt-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -189,26 +202,64 @@ export default function Dashboard() {
               'p-8 sm:p-12 lg:p-16'
             )}
           >
-            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Background decoration */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full"
+              />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+                className="absolute -left-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full"
+              />
+              {/* Floating pizzas */}
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    y: [0, -15, 0],
+                    rotate: [0, 10, -10, 0],
+                  }}
+                  transition={{
+                    duration: 3 + i,
+                    repeat: Infinity,
+                    delay: i * 0.4,
+                  }}
+                  className="absolute text-4xl opacity-20"
+                  style={{
+                    left: `${15 + i * 20}%`,
+                    top: `${20 + (i % 2) * 50}%`,
+                  }}
+                >
+                  🍕
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12 ">
               <div className="flex-1 text-center lg:text-left">
                 <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4 leading-tight">
-                  Order 3+ of the<br />
-                  Same Pizza
+                  Order 3+ of the<br />Same Pizza
                 </h3>
-                <p className="text-white/90 text-lg mb-6 max-w-lg leading-relaxed">
-                  Get an instant <strong className="text-white">10% discount</strong> on that item!
-                  Perfect for parties, gatherings, or just stocking up on your favorites.
+                <p className="text-white/90 text-lg mb-6 max-w-lg leading-relaxed ">
+                  Get an instant <strong className="text-white">10% discount</strong> on that item! Perfect for parties,
+                  gatherings, or just stocking up on your favorites.
                 </p>
-                <div className="flex flex-wrap gap-3 space-y-2 justify-center items-center lg:justify-start mt-4">
-                  <Badge className="bg-white/20 text-white border-transparent" size="md">
-                    🎉 Auto-applied at checkout
-                  </Badge>
-                  <Badge className="bg-white/20 text-white border-transparent" size="md">
-                    💰 Save up to 10%
-                  </Badge>
+                <div className="flex flex-wrap gap-3 space-y-2 justify-center items-center lg:justify-start lg:items-center mt-4">
+                  {badges.map((badge) => (
+                    <Badge 
+                    key={badge.label} 
+                    className={promotionalBadgeClass}
+                    size="md"
+                    >
+                      {badge.icon} {badge.label}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-              <div className="shrink-0">
+              <div className="flex-shrink-0">
                 <motion.div
                   animate={{
                     scale: [1, 1.1, 1],

@@ -15,53 +15,77 @@ export default async function Image() {
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #7c2d12 50%, #9a3412 100%)',
+          background: '#0a0a0a',
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
+          padding: '60px',
         }}
       >
-        {/* Background pattern */}
+        {/* Left side - Large pizza emoji */}
         <div
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(251, 146, 60, 0.1) 0%, transparent 50%)',
-          }}
-        />
-        
-        {/* Pizza emoji */}
-        <div style={{ fontSize: 200, marginBottom: 40 }}>🍕</div>
-        
-        {/* Title */}
-        <div
-          style={{
-            fontSize: 80,
-            fontWeight: 'bold',
-            color: 'white',
-            marginBottom: 20,
-            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: '0 0 400px',
+            marginRight: '60px',
           }}
         >
-          PizzaCraft
+          <div style={{ fontSize: 280, lineHeight: '1' }}>🍕</div>
         </div>
-        
-        {/* Subtitle */}
+
+        {/* Right side - Text content */}
         <div
           style={{
-            fontSize: 32,
-            color: '#FED7AA',
-            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            flex: '1',
           }}
         >
-          Artisan Pizzeria - Craft Your Perfect Pizza
+          {/* Title */}
+          <div
+            style={{
+              fontSize: 96,
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: '24px',
+              lineHeight: '1.1',
+            }}
+          >
+            PizzaCraft
+          </div>
+          
+          {/* Subtitle */}
+          <div
+            style={{
+              fontSize: 36,
+              color: '#FED7AA',
+              marginBottom: '32px',
+              lineHeight: '1.4',
+            }}
+          >
+            Artisan Pizzeria
+          </div>
+
+          {/* Description */}
+          <div
+            style={{
+              fontSize: 24,
+              color: '#CBD5E1',
+              lineHeight: '1.6',
+              maxWidth: '500px',
+            }}
+          >
+            Craft your perfect pizza with premium ingredients. Browse our menu, customize your order, and enjoy delicious pizzas delivered fresh to your door.
+          </div>
         </div>
       </div>
     ),
