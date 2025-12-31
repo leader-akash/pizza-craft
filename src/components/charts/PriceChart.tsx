@@ -2,17 +2,17 @@
 
 import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { usePizza } from '@/contexts/PizzaContext';
+import { useGetPizzasQuery } from '@/store/api/pizzaApi';
 import { PriceChartData } from '@/types';
 import { formatCurrency } from '@/utils/format';
 
 const COLORS = ['#f97316', '#fb923c', '#fdba74', '#fbbf24', '#f59e0b', '#d97706'];
 
 export const PriceChart = () => {
-  const { pizzas } = usePizza();
+  const { data: pizzas = [] } = useGetPizzasQuery();
 
   const chartData: PriceChartData[] = useMemo(() => {
-    return pizzas
+    return [...pizzas]
       .sort((a, b) => b.price - a.price)
       .slice(0, 8)
       .map((pizza) => ({

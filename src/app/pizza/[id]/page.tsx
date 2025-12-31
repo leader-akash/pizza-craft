@@ -4,25 +4,146 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, Minus, Leaf, Sparkles } from 'lucide-react';
-import { usePizza } from '@/contexts/PizzaContext';
-import { useCart } from '@/contexts/CartContext';
+import { useGetPizzaByIdQuery, useGetPizzasQuery } from '@/store/api/pizzaApi';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { selectCartItemQuantity, addItem, increment, decrement } from '@/store/slices/cartSlice';
+import { openCart } from '@/store/slices/cartOpenerSlice';
+import { addToast } from '@/store/slices/toastSlice';
 import { Button, SpicyBadge, CategoryBadge } from '@/components/common';
 import { formatCurrency } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import { fadeUpItem, staggerContainer } from '@/utils/animations';
+import { Pizza } from '@/types';
+
+// Related Pizza Card Component
+interface RelatedPizzaCardProps {
+  pizza: Pizza;
+}
+
+const RelatedPizzaCard = ({ pizza }: RelatedPizzaCardProps) => {
+  const dispatch = useAppDispatch();
+  const cartQuantity = useAppSelector(selectCartItemQuantity(pizza.id));
+
+  return (
+    <motion.div
+      variants={fadeUpItem}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group"
+    >
+      <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-linear-to-br from-slate-800/80 to-slate-900/80 hover:border-orange-500/50 transition-all">
+        {/* Image */}
+        <Link href={`/pizza/${pizza.id}`}>
+          <div className="relative aspect-[4/3] overflow-hidden cursor-pointer">
+            <img
+              src={pizza.imageUrl}
+              alt={pizza.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+          </div>
+        </Link>
+
+        {/* Content */}
+        <div className="p-4">
+          <Link href={`/pizza/${pizza.id}`}>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors cursor-pointer">
+              {pizza.name}
+            </h3>
+          </Link>
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-black bg-linear-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+              {formatCurrency(pizza.price)}
+            </span>
+            {cartQuantity > 0 ? (
+              <div className="flex items-center gap-2 bg-slate-800 rounded-xl p-1.5">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(decrement(pizza.id));
+                  }}
+                  className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-red-500/20 hover:text-red-400 text-white flex items-center justify-center transition-colors"
+                >
+                  <Minus className="w-4 h-4" />
+                </motion.button>
+                <span className="w-8 text-center font-bold text-white text-base">
+                  {cartQuantity}
+                </span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(increment(pizza.id));
+                    dispatch(
+                      addToast({
+                        type: 'success',
+                        message: `Added ${pizza.name} to cart! 🍕`,
+                        duration: 2000,
+                      })
+                    );
+                  }}
+                  className="w-8 h-8 rounded-lg bg-orange-500 hover:bg-orange-400 text-white flex items-center justify-center transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </motion.button>
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dispatch(addItem({ pizzaId: pizza.id, quantity: 1 }));
+                  dispatch(
+                    addToast({
+                      type: 'success',
+                      message: `Added ${pizza.name} to cart! 🍕`,
+                      duration: 3000,
+                    })
+                  );
+                }}
+                leftIcon={<Plus className="w-4 h-4" />}
+              >
+                Add
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 export default function PizzaDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { getPizzaById, pizzas } = usePizza();
-  const { addItem, increment, decrement, getItemQuantity } = useCart();
-
-  const pizza = getPizzaById(params.id as string);
+  const dispatch = useAppDispatch();
+  const { data: pizza, isLoading } = useGetPizzaByIdQuery(params.id as string);
+  const { data: pizzas = [] } = useGetPizzasQuery();
+  
+  // Call hook unconditionally at the top level (Rules of Hooks)
+  const cartQuantity = useAppSelector(selectCartItemQuantity(pizza?.id || ''));
 
   // Get related pizzas (same category, excluding current pizza)
   const relatedPizzas = pizzas
     .filter((p) => p.id !== pizza?.id && p.category === pizza?.category)
     .slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-4xl mb-4">🍕</p>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!pizza) {
     return (
@@ -36,8 +157,6 @@ export default function PizzaDetailsPage() {
       </div>
     );
   }
-
-  const cartQuantity = getItemQuantity(pizza.id);
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
@@ -135,7 +254,7 @@ export default function PizzaDetailsPage() {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => decrement(pizza.id)}
+                      onClick={() => dispatch(decrement(pizza.id))}
                       className="w-10 h-10 rounded-lg bg-slate-700 hover:bg-red-500/20 hover:text-red-400 text-white flex items-center justify-center transition-colors"
                     >
                       <Minus className="w-5 h-5" />
@@ -146,13 +265,19 @@ export default function PizzaDetailsPage() {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => increment(pizza.id)}
+                      onClick={() => dispatch(increment(pizza.id))}
                       className="w-10 h-10 rounded-lg bg-orange-500 hover:bg-orange-400 text-white flex items-center justify-center transition-colors"
                     >
                       <Plus className="w-5 h-5" />
                     </motion.button>
                   </div>
-                  <Button variant="primary" onClick={() => router.push('/')} fullWidth>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      dispatch(openCart());
+                    }}
+                    fullWidth
+                  >
                     View Cart
                   </Button>
                 </div>
@@ -161,7 +286,16 @@ export default function PizzaDetailsPage() {
                   variant="primary"
                   size="lg"
                   fullWidth
-                  onClick={() => addItem(pizza.id, 1)}
+                  onClick={() => {
+                    dispatch(addItem({ pizzaId: pizza.id, quantity: 1 }));
+                    dispatch(
+                      addToast({
+                        type: 'success',
+                        message: `Added ${pizza.name} to cart! 🍕`,
+                        duration: 3000,
+                      })
+                    );
+                  }}
                   leftIcon={<Plus className="w-5 h-5" />}
                 >
                   Add to Cart
@@ -197,51 +331,8 @@ export default function PizzaDetailsPage() {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              {relatedPizzas.map((relatedPizza, index) => (
-                <motion.div
-                  key={relatedPizza.id}
-                  variants={fadeUpItem}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group cursor-pointer"
-                >
-                  <Link href={`/pizza/${relatedPizza.id}`}>
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-linear-to-br from-slate-800/80 to-slate-900/80 hover:border-orange-500/50 transition-all">
-                      {/* Image */}
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img
-                          src={relatedPizza.imageUrl}
-                          alt={relatedPizza.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
-                          {relatedPizza.name}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-black bg-linear-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                            {formatCurrency(relatedPizza.price)}
-                          </span>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              addItem(relatedPizza.id, 1);
-                            }}
-                            leftIcon={<Plus className="w-4 h-4" />}
-                          >
-                            Add
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
+              {relatedPizzas.map((relatedPizza) => (
+                <RelatedPizzaCard key={relatedPizza.id} pizza={relatedPizza} />
               ))}
             </motion.div>
           </motion.section>

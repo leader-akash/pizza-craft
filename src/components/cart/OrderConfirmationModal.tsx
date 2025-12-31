@@ -4,8 +4,10 @@ import { Modal } from '@/components/common';
 import { Button } from '@/components/common';
 import { formatCurrency } from '@/utils/format';
 import { OrderItem } from '@/types';
-import { useOrder } from '@/contexts/OrderContext';
-import { useCart } from '@/contexts/CartContext';
+import { useAppDispatch } from '@/store/hooks';
+import { useAddOrderMutation } from '@/store/api/orderApi';
+import { clearCart } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/toastSlice';
 import { generateOrderId } from '@/utils/format';
 
 interface OrderConfirmationModalProps {
@@ -27,10 +29,10 @@ export const OrderConfirmationModal = ({
   totalDiscount,
   finalTotal,
 }: OrderConfirmationModalProps) => {
-  const { addOrder } = useOrder();
-  const { clearCart } = useCart();
+  const dispatch = useAppDispatch();
+  const [addOrder] = useAddOrderMutation();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const order = {
       id: generateOrderId(),
       items: orderItems,
@@ -41,8 +43,15 @@ export const OrderConfirmationModal = ({
       status: 'confirmed' as const,
     };
 
-    addOrder(order);
-    clearCart();
+    await addOrder(order);
+    dispatch(clearCart());
+    dispatch(
+      addToast({
+        type: 'success',
+        message: `Order confirmed! 🎉 Order #${order.id.slice(-6)}`,
+        duration: 4000,
+      })
+    );
     onConfirm();
   };
 

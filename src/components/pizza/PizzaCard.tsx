@@ -8,7 +8,9 @@ import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
 import { fadeUpItem, springTransition } from '@/utils/animations';
 import { SpicyBadge } from '@/components/common';
-import { useCart } from '@/contexts/CartContext';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { selectCartItemQuantity, addItem, increment, decrement } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/toastSlice';
 
 interface PizzaCardProps {
   pizza: Pizza;
@@ -16,25 +18,39 @@ interface PizzaCardProps {
 }
 
 export const PizzaCard = ({ pizza, index = 0 }: PizzaCardProps) => {
-  const { addItem, increment, decrement, getItemQuantity } = useCart();
-  const cartQuantity = getItemQuantity(pizza.id);
+  const dispatch = useAppDispatch();
+  const cartQuantity = useAppSelector(selectCartItemQuantity(pizza.id));
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(pizza.id, 1);
+    dispatch(addItem({ pizzaId: pizza.id, quantity: 1 }));
+    dispatch(
+      addToast({
+        type: 'success',
+        message: `Added ${pizza.name} to cart! 🍕`,
+        duration: 3000,
+      })
+    );
   };
 
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    increment(pizza.id);
+    dispatch(increment(pizza.id));
+    dispatch(
+      addToast({
+        type: 'success',
+        message: `Added ${pizza.name} to cart! 🍕`,
+        duration: 2000,
+      })
+    );
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    decrement(pizza.id);
+    dispatch(decrement(pizza.id));
   };
 
   return (
@@ -60,7 +76,7 @@ export const PizzaCard = ({ pizza, index = 0 }: PizzaCardProps) => {
           )}
         >
           {/* Image Container */}
-          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+          <div className="relative aspect-[4/3] overflow-hidden shrink-0">
             <img
               src={pizza.imageUrl}
               alt={pizza.name}

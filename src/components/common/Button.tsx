@@ -117,9 +117,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </svg>
         )}
         <span className={cn('flex items-center gap-inherit', isLoading && 'invisible')}>
-          {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+          {leftIcon && <span className="shrink-0">{leftIcon}</span>}
           {children}
-          {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+          {rightIcon && <span className="shrink-0">{rightIcon}</span>}
         </span>
       </motion.button>
     );

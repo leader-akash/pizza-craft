@@ -89,15 +89,15 @@ export const Footer = () => {
             <h4 className="text-lg font-bold text-white">Contact Us</h4>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3 text-slate-400 text-sm">
-                <MapPin className="w-5 h-5 text-orange-400 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-orange-400 shrink-0" />
                 <span>123 Pizza Street, NY 10001</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm">
-                <Phone className="w-5 h-5 text-orange-400 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-orange-400 shrink-0" />
                 <span>+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center gap-3 text-slate-400 text-sm">
-                <Mail className="w-5 h-5 text-orange-400 flex-shrink-0" />
+                <Mail className="w-5 h-5 text-orange-400 shrink-0" />
                 <span>hello@pizzacraft.com</span>
               </div>
             </div>

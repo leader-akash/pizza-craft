@@ -15,7 +15,7 @@ import {
   DollarSign,
 } from 'lucide-react';
 import { Button, ConfirmModal } from '@/components/common';
-import { useOrder } from '@/contexts/OrderContext';
+import { useGetOrdersQuery, useRemoveOrderMutation, useClearAllOrdersMutation } from '@/store/api/orderApi';
 import { formatCurrency, formatRelativeTime, formatDate } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import { staggerContainer } from '@/utils/animations';
@@ -59,17 +59,19 @@ const statusConfig: Record<
 };
 
 export default function OrdersPage() {
-  const { orders, removeOrder, clearAllOrders } = useOrder();
+  const { data: orders = [] } = useGetOrdersQuery();
+  const [removeOrder] = useRemoveOrderMutation();
+  const [clearAllOrders] = useClearAllOrdersMutation();
   const [showClearModal, setShowClearModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
 
-  const handleClearAll = () => {
-    clearAllOrders();
+  const handleClearAll = async () => {
+    await clearAllOrders().unwrap();
     setShowClearModal(false);
   };
 
-  const handleRemoveOrder = (orderId: string) => {
-    removeOrder(orderId);
+  const handleRemoveOrder = async (orderId: string) => {
+    await removeOrder(orderId).unwrap();
     setOrderToDelete(null);
   };
 

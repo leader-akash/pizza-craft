@@ -2,9 +2,21 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, ArrowUpDown, Leaf, Flame, RotateCcw } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown, Leaf, Flame, RotateCcw, Search, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { useFilter } from '@/contexts/FilterContext';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import {
+  selectFilters,
+  selectActiveFilterCount,
+  setCategory,
+  setVegetarian,
+  setMaxPrice,
+  setSortBy,
+  setSortOrder,
+  setSpicyLevel,
+  setSearchQuery,
+  resetFilters,
+} from '@/store/slices/filterSlice';
 import { PizzaCategory, SortOption } from '@/types';
 import { Button } from '@/components/common';
 
@@ -39,21 +51,46 @@ const spicyLevels = [
 ];
 
 export const PizzaFilters = () => {
-  const {
-    filters,
-    setCategory,
-    setVegetarian,
-    setMaxPrice,
-    setSortBy,
-    setSortOrder,
-    setSpicyLevel,
-    resetFilters,
-    activeFilterCount,
-  } = useFilter();
+  const dispatch = useAppDispatch();
+  const filters = useAppSelector(selectFilters);
+  const activeFilterCount = useAppSelector(selectActiveFilterCount);
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="space-y-4">
+      {/* Search Bar */}
+      <div className="relative">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10" />
+          <input
+            type="text"
+            value={filters.searchQuery}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+            placeholder="Search pizzas, ingredients, flavors, or price (e.g., $15, under $20)..."
+            className={cn(
+              'w-full pl-12 pr-12 py-3.5 rounded-2xl',
+              'bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-slate-900/90',
+              'backdrop-blur-sm border border-slate-700/50',
+              'text-white text-sm placeholder:text-slate-500',
+              'focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50',
+              'transition-all duration-300',
+              'shadow-lg shadow-black/20',
+              'hover:border-slate-600/50'
+            )}
+          />
+          {filters.searchQuery && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={() => dispatch(setSearchQuery(''))}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </motion.button>
+          )}
+        </div>
+      </div>
+
       {/* Top Row - Categories and Sort */}
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
         {/* Category Pills */}
@@ -63,7 +100,7 @@ export const PizzaFilters = () => {
               key={cat.value}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setCategory(cat.value)}
+              onClick={() => dispatch(setCategory(cat.value))}
               className={cn(
                 'px-4 py-2 rounded-xl text-sm font-semibold',
                 'border transition-all duration-300',
@@ -101,7 +138,7 @@ export const PizzaFilters = () => {
           <div className="flex items-center gap-2">
             <select
               value={filters.sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              onChange={(e) => dispatch(setSortBy(e.target.value as SortOption))}
               className={cn(
                 'px-3 py-2 rounded-xl text-sm',
                 'bg-slate-800/50 border border-slate-700/50 text-white',
@@ -117,7 +154,7 @@ export const PizzaFilters = () => {
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => setSortOrder(filters.sortOrder === 'asc' ? 'desc' : 'asc')}
+              onClick={() => dispatch(setSortOrder(filters.sortOrder === 'asc' ? 'desc' : 'asc'))}
               className={cn(
                 'p-2 rounded-xl',
                 'bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:text-white'
@@ -148,7 +185,7 @@ export const PizzaFilters = () => {
                 value={filters.isVegetarian === null ? 'all' : filters.isVegetarian ? 'veg' : 'non-veg'}
                 onChange={(e) => {
                   const value = e.target.value;
-                  setVegetarian(value === 'all' ? null : value === 'veg');
+                  dispatch(setVegetarian(value === 'all' ? null : value === 'veg'));
                 }}
                 className="w-full px-3 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white text-sm"
               >
@@ -163,7 +200,7 @@ export const PizzaFilters = () => {
               <label className="block text-sm font-semibold text-slate-300 mb-2">Max Price</label>
               <select
                 value={filters.maxPrice || ''}
-                onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) => dispatch(setMaxPrice(e.target.value ? Number(e.target.value) : null))}
                 className="w-full px-3 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white text-sm"
               >
                 {priceRanges.map((range) => (
@@ -182,7 +219,7 @@ export const PizzaFilters = () => {
               </label>
               <select
                 value={filters.spicyLevel === null ? '' : filters.spicyLevel}
-                onChange={(e) => setSpicyLevel(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) => dispatch(setSpicyLevel(e.target.value ? Number(e.target.value) : null))}
                 className="w-full px-3 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-white text-sm"
               >
                 {spicyLevels.map((level) => (
@@ -198,7 +235,7 @@ export const PizzaFilters = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={resetFilters}
+                onClick={() => dispatch(resetFilters())}
                 leftIcon={<RotateCcw className="w-4 h-4" />}
                 fullWidth
               >
