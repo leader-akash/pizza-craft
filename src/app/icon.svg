@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="45" fill="#F97316" stroke="#EA580C" stroke-width="2"/>
+  <circle cx="50" cy="50" r="35" fill="#FB923C"/>
+  <!-- Pizza slices -->
+  <circle cx="35" cy="35" r="4" fill="#FED7AA"/>
+  <circle cx="50" cy="30" r="3" fill="#FED7AA"/>
+  <circle cx="65" cy="35" r="4" fill="#FED7AA"/>
+  <circle cx="30" cy="50" r="3" fill="#FED7AA"/>
+  <circle cx="70" cy="50" r="4" fill="#FED7AA"/>
+  <circle cx="35" cy="65" r="3" fill="#FED7AA"/>
+  <circle cx="50" cy="70" r="4" fill="#FED7AA"/>
+  <circle cx="65" cy="65" r="3" fill="#FED7AA"/>
+  <!-- Cheese highlights -->
+  <circle cx="42" cy="42" r="2" fill="#FFFBEB" opacity="0.6"/>
+  <circle cx="58" cy="58" r="2" fill="#FFFBEB" opacity="0.6"/>
+</svg>
+

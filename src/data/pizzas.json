@@ -1,0 +1,147 @@
+[
+  {
+    "id": "1",
+    "name": "Margherita Classic",
+    "price": 12.99,
+    "description": "The timeless Italian classic with San Marzano tomatoes, fresh mozzarella, basil, and extra virgin olive oil",
+    "ingredients": ["tomato sauce", "fresh mozzarella", "basil", "olive oil"],
+    "category": "classic",
+    "imageUrl": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800",
+    "isVegetarian": true,
+    "isPopular": true,
+    "spicyLevel": 0
+  },
+  {
+    "id": "2",
+    "name": "Pepperoni Inferno",
+    "price": 15.99,
+    "description": "Loaded with premium pepperoni, mozzarella, and a hint of chili flakes for that extra kick",
+    "ingredients": ["tomato sauce", "mozzarella", "pepperoni", "chili flakes"],
+    "category": "meat",
+    "imageUrl": "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800",
+    "isVegetarian": false,
+    "isPopular": true,
+    "spicyLevel": 2
+  },
+  {
+    "id": "3",
+    "name": "Hawaiian Paradise",
+    "price": 14.99,
+    "description": "Sweet pineapple meets savory ham on a bed of tangy tomato sauce and melted cheese",
+    "ingredients": ["tomato sauce", "mozzarella", "ham", "pineapple"],
+    "category": "specialty",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800",
+    "isVegetarian": false,
+    "isPopular": false,
+    "spicyLevel": 0
+  },
+  {
+    "id": "4",
+    "name": "Quattro Formaggi",
+    "price": 16.99,
+    "description": "A cheese lover's dream with mozzarella, gorgonzola, parmesan, and fontina",
+    "ingredients": ["cream sauce", "mozzarella", "gorgonzola", "parmesan", "fontina"],
+    "category": "classic",
+    "imageUrl": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800",
+    "isVegetarian": true,
+    "isPopular": true,
+    "spicyLevel": 0
+  },
+  {
+    "id": "5",
+    "name": "BBQ Chicken Feast",
+    "price": 17.99,
+    "description": "Smoky BBQ sauce, grilled chicken, red onions, and cilantro create this American favorite",
+    "ingredients": ["bbq sauce", "mozzarella", "grilled chicken", "red onion", "cilantro"],
+    "category": "meat",
+    "imageUrl": "https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=800",
+    "isVegetarian": false,
+    "isPopular": true,
+    "spicyLevel": 1
+  },
+  {
+    "id": "6",
+    "name": "Veggie Supreme",
+    "price": 15.49,
+    "description": "A garden of flavors with bell peppers, mushrooms, olives, onions, and fresh tomatoes",
+    "ingredients": ["tomato sauce", "mozzarella", "bell peppers", "mushrooms", "olives", "onions", "tomatoes"],
+    "category": "vegetarian",
+    "imageUrl": "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=800",
+    "isVegetarian": true,
+    "isPopular": false,
+    "spicyLevel": 0
+  },
+  {
+    "id": "7",
+    "name": "Diavola",
+    "price": 16.49,
+    "description": "For the brave - spicy salami, jalapeños, and hot sauce on a fiery bed of cheese",
+    "ingredients": ["tomato sauce", "mozzarella", "spicy salami", "jalapeños", "hot sauce"],
+    "category": "meat",
+    "imageUrl": "https://images.unsplash.com/photo-1458642849426-cfb724f15ef7?w=800",
+    "isVegetarian": false,
+    "isPopular": true,
+    "spicyLevel": 3
+  },
+  {
+    "id": "8",
+    "name": "Mediterranean Dream",
+    "price": 17.49,
+    "description": "Sun-dried tomatoes, feta cheese, kalamata olives, and fresh oregano transport you to Greece",
+    "ingredients": ["olive oil base", "feta", "sun-dried tomatoes", "kalamata olives", "oregano", "spinach"],
+    "category": "specialty",
+    "imageUrl": "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=800",
+    "isVegetarian": true,
+    "isPopular": false,
+    "spicyLevel": 0
+  },
+  {
+    "id": "9",
+    "name": "Meat Lovers",
+    "price": 19.99,
+    "description": "The ultimate carnivore's choice with pepperoni, sausage, bacon, and ground beef",
+    "ingredients": ["tomato sauce", "mozzarella", "pepperoni", "italian sausage", "bacon", "ground beef"],
+    "category": "meat",
+    "imageUrl": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=800",
+    "isVegetarian": false,
+    "isPopular": true,
+    "spicyLevel": 1
+  },
+  {
+    "id": "10",
+    "name": "Truffle Mushroom",
+    "price": 21.99,
+    "description": "Luxurious truffle oil drizzled over cremini, shiitake, and portobello mushrooms",
+    "ingredients": ["cream sauce", "mozzarella", "cremini mushrooms", "shiitake", "portobello", "truffle oil", "thyme"],
+    "category": "specialty",
+    "imageUrl": "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=800",
+    "isVegetarian": true,
+    "isPopular": false,
+    "spicyLevel": 0
+  },
+  {
+    "id": "11",
+    "name": "Buffalo Blaze",
+    "price": 17.99,
+    "description": "Crispy buffalo chicken, blue cheese crumbles, and ranch drizzle for wing lovers",
+    "ingredients": ["buffalo sauce", "mozzarella", "buffalo chicken", "blue cheese", "ranch", "celery"],
+    "category": "specialty",
+    "imageUrl": "https://images.unsplash.com/photo-1590947132387-155cc02f3212?w=800",
+    "isVegetarian": false,
+    "isPopular": true,
+    "spicyLevel": 2
+  },
+  {
+    "id": "12",
+    "name": "Pesto Perfection",
+    "price": 16.99,
+    "description": "Fresh basil pesto base with cherry tomatoes, pine nuts, and parmesan shavings",
+    "ingredients": ["pesto sauce", "mozzarella", "cherry tomatoes", "pine nuts", "parmesan", "arugula"],
+    "category": "vegetarian",
+    "imageUrl": "https://images.unsplash.com/photo-1600028068383-ea11a7a101f3?w=800",
+    "isVegetarian": true,
+    "isPopular": false,
+    "spicyLevel": 0
+  }
+]
+
