@@ -66,7 +66,7 @@ export const PizzaFilters = () => {
             type="text"
             value={filters.searchQuery}
             onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-            placeholder="Search pizzas, ingredients, or flavors..."
+            placeholder="Search pizzas, ingredients, flavors, or price (e.g., $15, under $20)..."
             className={cn(
               'w-full pl-12 pr-12 py-3.5 rounded-2xl',
               'bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-slate-900/90',

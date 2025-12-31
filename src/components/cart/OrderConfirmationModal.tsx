@@ -7,6 +7,7 @@ import { OrderItem } from '@/types';
 import { useAppDispatch } from '@/store/hooks';
 import { useAddOrderMutation } from '@/store/api/orderApi';
 import { clearCart } from '@/store/slices/cartSlice';
+import { addToast } from '@/store/slices/toastSlice';
 import { generateOrderId } from '@/utils/format';
 
 interface OrderConfirmationModalProps {
@@ -44,6 +45,13 @@ export const OrderConfirmationModal = ({
 
     await addOrder(order);
     dispatch(clearCart());
+    dispatch(
+      addToast({
+        type: 'success',
+        message: `Order confirmed! 🎉 Order #${order.id.slice(-6)}`,
+        duration: 4000,
+      })
+    );
     onConfirm();
   };
 

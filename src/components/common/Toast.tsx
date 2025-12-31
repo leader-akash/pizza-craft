@@ -57,9 +57,10 @@ export const Toast = ({ toast, onRemove }: ToastProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+      initial={{ opacity: 0, y: -50, scale: 0.8, x: -20 }}
+      animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+      exit={{ opacity: 0, scale: 0.8, x: 20, transition: { duration: 0.2 } }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className={cn(
         'flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-md',
         'min-w-[320px] max-w-md shadow-xl',
@@ -95,12 +96,19 @@ interface ToastContainerProps {
 
 export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 flex flex-col-reverse items-center gap-3 pointer-events-none">
-       <AnimatePresence mode="popLayout">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col-reverse items-center gap-3 pointer-events-none">
+      <AnimatePresence mode="popLayout">
         {toasts.map((toast) => (
-          <div key={toast.id} className="pointer-events-auto">
+          <motion.div
+            key={toast.id}
+            layout
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="pointer-events-auto"
+          >
             <Toast toast={toast} onRemove={onRemove} />
-          </div>
+          </motion.div>
         ))}
       </AnimatePresence>
     </div>

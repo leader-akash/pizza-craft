@@ -13,6 +13,111 @@ import { Button, SpicyBadge, CategoryBadge } from '@/components/common';
 import { formatCurrency } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import { fadeUpItem, staggerContainer } from '@/utils/animations';
+import { Pizza } from '@/types';
+
+// Related Pizza Card Component
+interface RelatedPizzaCardProps {
+  pizza: Pizza;
+}
+
+const RelatedPizzaCard = ({ pizza }: RelatedPizzaCardProps) => {
+  const dispatch = useAppDispatch();
+  const cartQuantity = useAppSelector(selectCartItemQuantity(pizza.id));
+
+  return (
+    <motion.div
+      variants={fadeUpItem}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group"
+    >
+      <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-linear-to-br from-slate-800/80 to-slate-900/80 hover:border-orange-500/50 transition-all">
+        {/* Image */}
+        <Link href={`/pizza/${pizza.id}`}>
+          <div className="relative aspect-[4/3] overflow-hidden cursor-pointer">
+            <img
+              src={pizza.imageUrl}
+              alt={pizza.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+          </div>
+        </Link>
+
+        {/* Content */}
+        <div className="p-4">
+          <Link href={`/pizza/${pizza.id}`}>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors cursor-pointer">
+              {pizza.name}
+            </h3>
+          </Link>
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-black bg-linear-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+              {formatCurrency(pizza.price)}
+            </span>
+            {cartQuantity > 0 ? (
+              <div className="flex items-center gap-2 bg-slate-800 rounded-xl p-1.5">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(decrement(pizza.id));
+                  }}
+                  className="w-8 h-8 rounded-lg bg-slate-700 hover:bg-red-500/20 hover:text-red-400 text-white flex items-center justify-center transition-colors"
+                >
+                  <Minus className="w-4 h-4" />
+                </motion.button>
+                <span className="w-8 text-center font-bold text-white text-base">
+                  {cartQuantity}
+                </span>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(increment(pizza.id));
+                    dispatch(
+                      addToast({
+                        type: 'success',
+                        message: `Added ${pizza.name} to cart! 🍕`,
+                        duration: 2000,
+                      })
+                    );
+                  }}
+                  className="w-8 h-8 rounded-lg bg-orange-500 hover:bg-orange-400 text-white flex items-center justify-center transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </motion.button>
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dispatch(addItem({ pizzaId: pizza.id, quantity: 1 }));
+                  dispatch(
+                    addToast({
+                      type: 'success',
+                      message: `Added ${pizza.name} to cart! 🍕`,
+                      duration: 3000,
+                    })
+                  );
+                }}
+                leftIcon={<Plus className="w-4 h-4" />}
+              >
+                Add
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 export default function PizzaDetailsPage() {
   const params = useParams();
@@ -226,58 +331,8 @@ export default function PizzaDetailsPage() {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              {relatedPizzas.map((relatedPizza, index) => (
-                <motion.div
-                  key={relatedPizza.id}
-                  variants={fadeUpItem}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group cursor-pointer"
-                >
-                  <Link href={`/pizza/${relatedPizza.id}`}>
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-linear-to-br from-slate-800/80 to-slate-900/80 hover:border-orange-500/50 transition-all">
-                      {/* Image */}
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img
-                          src={relatedPizza.imageUrl}
-                          alt={relatedPizza.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
-                          {relatedPizza.name}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-black bg-linear-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                            {formatCurrency(relatedPizza.price)}
-                          </span>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              dispatch(addItem({ pizzaId: relatedPizza.id, quantity: 1 }));
-                              dispatch(
-                                addToast({
-                                  type: 'success',
-                                  message: `Added ${relatedPizza.name} to cart! 🍕`,
-                                  duration: 3000,
-                                })
-                              );
-                            }}
-                            leftIcon={<Plus className="w-4 h-4" />}
-                          >
-                            Add
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
+              {relatedPizzas.map((relatedPizza) => (
+                <RelatedPizzaCard key={relatedPizza.id} pizza={relatedPizza} />
               ))}
             </motion.div>
           </motion.section>

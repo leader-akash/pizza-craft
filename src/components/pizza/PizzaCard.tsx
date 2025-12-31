@@ -38,6 +38,13 @@ export const PizzaCard = ({ pizza, index = 0 }: PizzaCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(increment(pizza.id));
+    dispatch(
+      addToast({
+        type: 'success',
+        message: `Added ${pizza.name} to cart! 🍕`,
+        duration: 2000,
+      })
+    );
   };
 
   const handleDecrement = (e: React.MouseEvent) => {

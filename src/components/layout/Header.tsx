@@ -10,6 +10,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { selectCartItemCount } from '@/store/slices/cartSlice';
 import { selectShouldOpenCart, closeCart } from '@/store/slices/cartOpenerSlice';
 import { CartSidebar } from '@/components/cart/CartSidebar';
+import { ThemeToggle } from './ThemeToggle';
 
 const navLinks = [
   { to: '/', label: 'Menu', icon: Home },
@@ -108,6 +109,9 @@ export const Header = () => {
 
             {/* Right - Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+              
               {/* Cart Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
