@@ -30,7 +30,7 @@ type PizzaFormData = z.infer<typeof pizzaSchema>;
 
 const categories = [
   { value: 'classic', label: 'Classic' },
-  { value: 'meat', label: 'Meat Lovers' },
+  { value: 'meat', label: 'Non veg' },
   { value: 'vegetarian', label: 'Vegetarian' },
   { value: 'specialty', label: 'Specialty' },
 ];
@@ -136,13 +136,13 @@ export default function AddPizzaPage() {
           <p className="text-slate-400">Add your custom pizza to the menu</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           {/* Left Column - Form */}
           <motion.div
             variants={fadeUpItem}
             initial="hidden"
             animate="show"
-            className="space-y-6"
+            className="space-y-6 h-full flex flex-col"
           >
             <div className="space-y-6">
               {/* Basic Information Card */}
@@ -290,7 +290,7 @@ export default function AddPizzaPage() {
             initial="hidden"
             animate="show"
             transition={{ delay: 0.1 }}
-            className="space-y-6"
+            className="space-y-6 h-full flex flex-col"
           >
             {/* Image URL Card */}
             <div className="rounded-2xl bg-linear-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 p-6">
@@ -329,12 +329,12 @@ export default function AddPizzaPage() {
             </div>
 
             {/* Live Preview Card */}
-            <div className="rounded-2xl bg-linear-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 p-6">
+            <div className="rounded-2xl h-full bg-linear-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-orange-400" />
                 <h2 className="text-xl font-bold text-white">Live Preview</h2>
               </div>
-              <div className="relative aspect-square rounded-xl overflow-hidden border border-slate-700 bg-slate-900/50">
+              <div className="relative lg:h-[70%] rounded-xl overflow-hidden border border-slate-700 bg-slate-900/50">
                 {imageUrl ? (
                   <img
                     src={imageUrl}

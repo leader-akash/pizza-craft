@@ -3,6 +3,16 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Sparkles, Clock, Award, Flame, UtensilsCrossed } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
+const smoothScrollTo = (elementId: string) => {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'start',
+    });
+  }
+};
+
 export const HeroBanner = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -111,7 +121,7 @@ export const HeroBanner = () => {
       {/* Content */}
       <motion.div
         style={{ y, opacity, scale }}
-        className="relative z-10 text-center px-4 max-w-6xl mx-auto"
+        className="relative z-10 text-center px-4 max-w-6xl mx-auto py-12 sm:py-16 pb-20 sm:pb-28"
       >
         {/* Badge */}
         <motion.div
@@ -158,8 +168,8 @@ export const HeroBanner = () => {
           transition={{ delay: 0.8, duration: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-          <motion.a
-            href="#menu"
+          <motion.button
+            onClick={() => smoothScrollTo('menu')}
             whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(249, 115, 22, 0.3)' }}
             whileTap={{ scale: 0.98 }}
             className={cn(
@@ -167,25 +177,25 @@ export const HeroBanner = () => {
               'bg-gradient-to-r from-orange-500 via-orange-600 to-red-500',
               'text-white shadow-xl shadow-orange-500/30',
               'transition-all duration-300',
-              'flex items-center gap-3'
+              'flex items-center gap-3 cursor-pointer'
             )}
           >
             <UtensilsCrossed className="w-5 h-5 group-hover:rotate-12 transition-transform" />
             Explore Menu
-          </motion.a>
-          <motion.a
-            href="#specials"
+          </motion.button>
+          <motion.button
+            onClick={() => smoothScrollTo('menu')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             className={cn(
               'px-8 py-4 rounded-2xl font-bold text-lg',
               'bg-white/5 backdrop-blur-sm border border-white/10',
               'text-white hover:bg-white/10 hover:border-white/20',
-              'transition-all duration-300'
+              'transition-all duration-300 cursor-pointer'
             )}
           >
             Today's Specials ✨
-          </motion.a>
+          </motion.button>
         </motion.div>
 
         {/* Feature badges */}
@@ -193,7 +203,7 @@ export const HeroBanner = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-8"
         >
           <FeatureBadge icon={<Clock className="w-5 h-5" />} text="30 Min Delivery" />
           <FeatureBadge icon={<Award className="w-5 h-5" />} text="Premium Quality" />

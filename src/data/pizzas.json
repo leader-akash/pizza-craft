@@ -97,7 +97,7 @@
   },
   {
     "id": "9",
-    "name": "Meat Lovers",
+    "name": "Non veg Lovers",
     "price": 19.99,
     "description": "The ultimate carnivore's choice with pepperoni, sausage, bacon, and ground beef",
     "ingredients": ["tomato sauce", "mozzarella", "pepperoni", "italian sausage", "bacon", "ground beef"],
