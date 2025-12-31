@@ -27,7 +27,14 @@ const saveOrdersToStorage = (orders: Order[]) => {
 
 export const orderApi = createApi({
   reducerPath: 'orderApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api',
+    fetchFn: (typeof window !== 'undefined' && window.fetch) 
+      ? window.fetch 
+      : (typeof global !== 'undefined' && global.fetch) 
+        ? global.fetch 
+        : fetch,
+  }),
   tagTypes: ['Order'],
   endpoints: (builder) => ({
     getOrders: builder.query<Order[], void>({

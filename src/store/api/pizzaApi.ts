@@ -10,7 +10,14 @@ let pizzas: Pizza[] = [...(pizzasData as Pizza[])];
 
 export const pizzaApi = createApi({
   reducerPath: 'pizzaApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api',
+    fetchFn: (typeof window !== 'undefined' && window.fetch) 
+      ? window.fetch 
+      : (typeof global !== 'undefined' && global.fetch) 
+        ? global.fetch 
+        : fetch,
+  }),
   tagTypes: ['Pizza'],
   endpoints: (builder) => ({
     getPizzas: builder.query<Pizza[], void>({
