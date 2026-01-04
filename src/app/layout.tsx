@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className="min-h-screen bg-slate-950 text-white dark:bg-slate-950 dark:text-white light:bg-white light:text-slate-950" suppressHydrationWarning>
+      <body className="min-h-screen bg-slate-950 text-white dark:bg-slate-950 dark:text-white" suppressHydrationWarning>
         <ReduxProvider>
           <ThemeProvider>
             <ToastProvider>

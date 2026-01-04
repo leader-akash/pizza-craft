@@ -14,6 +14,8 @@ import { PizzaCategory } from '@/types';
 import { cn } from '@/utils/cn';
 import { fadeUpItem } from '@/utils/animations';
 import { formatCurrency } from '@/utils/format';
+import { addToast } from '@/store/slices/toastSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 const pizzaSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
@@ -87,6 +89,7 @@ export default function AddPizzaPage() {
   const description = watch('description');
   const ingredients = watch('ingredients');
   const spicyLevel = watch('spicyLevel');
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (data: PizzaFormData) => {
     try {
@@ -104,7 +107,12 @@ export default function AddPizzaPage() {
       };
 
       await addPizza(newPizza).unwrap();
-      router.push('/');
+      dispatch(addToast({
+        type: 'success',
+        message: 'Pizza created successfully',
+        duration: 2000,
+      }));
+      // router.push('/');
     } catch (error) {
       console.error('Error adding pizza:', error);
     }

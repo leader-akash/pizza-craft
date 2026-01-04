@@ -5,16 +5,10 @@
   --foreground: #ededed;
 }
 
-/* Dark theme (default) */
+/* Dark theme */
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
-}
-
-/* Light theme */
-.light {
-  --background: #ffffff;
-  --foreground: #1e1e1e;
 }
 
 body {
@@ -25,7 +19,7 @@ body {
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 

@@ -57,11 +57,15 @@ export const orderApi = createApi({
       },
       providesTags: (result, error, id) => [{ type: 'Order', id }],
     }),
+    // Saves a new order to localStorage (simulating backend)
+    // Orders are stored as an array, with newest orders at the front
     addOrder: builder.mutation<Order, Order>({
       queryFn: async (newOrder) => {
         await delay(200);
+        // Load existing orders and prepend the new one
         const orders = loadOrdersFromStorage();
         const updatedOrders = [newOrder, ...orders];
+        // Save back to localStorage
         saveOrdersToStorage(updatedOrders);
         return { data: newOrder };
       },

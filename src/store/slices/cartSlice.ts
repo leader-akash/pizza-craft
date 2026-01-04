@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CartItem, Pizza } from '@/types';
 
-// Discount threshold: 3 or more of the same pizza = 10% off that item
+// Discount rules: if you order 3 or more of the same pizza, you get 10% off that specific item
 const DISCOUNT_THRESHOLD = 3;
 const DISCOUNT_PERCENTAGE = 0.1;
 
@@ -74,6 +74,7 @@ export const selectCartItemQuantity = (pizzaId: string) => (state: { cart: CartS
 };
 
 // Helper functions for calculations
+// Converts cart items to order items with discount calculations
 export const getOrderItems = (items: CartItem[], pizzas: Pizza[]) => {
   return items.map((cartItem) => {
     const pizza = pizzas.find((p) => p.id === cartItem.pizzaId);
@@ -81,9 +82,16 @@ export const getOrderItems = (items: CartItem[], pizzas: Pizza[]) => {
       throw new Error(`Pizza not found: ${cartItem.pizzaId}`);
     }
 
+    // Calculate original price (quantity * unit price)
     const originalPrice = pizza.price * cartItem.quantity;
+    
+    // Check if this item qualifies for discount (3+ of same pizza)
     const qualifiesForDiscount = cartItem.quantity >= DISCOUNT_THRESHOLD;
+    
+    // Apply 10% discount if qualified, otherwise no discount
     const discountAmount = qualifiesForDiscount ? originalPrice * DISCOUNT_PERCENTAGE : 0;
+    
+    // Final price after discount
     const finalPrice = originalPrice - discountAmount;
 
     return {
@@ -96,16 +104,19 @@ export const getOrderItems = (items: CartItem[], pizzas: Pizza[]) => {
   });
 };
 
+// Calculate subtotal (sum of all original prices before discount)
 export const getSubtotal = (items: CartItem[], pizzas: Pizza[]): number => {
   const orderItems = getOrderItems(items, pizzas);
   return orderItems.reduce((total, item) => total + item.originalPrice, 0);
 };
 
+// Calculate total discount (sum of all discount amounts from items that qualified)
 export const getTotalDiscount = (items: CartItem[], pizzas: Pizza[]): number => {
   const orderItems = getOrderItems(items, pizzas);
   return orderItems.reduce((total, item) => total + item.discountAmount, 0);
 };
 
+// Calculate final total (subtotal minus total discount)
 export const getFinalTotal = (items: CartItem[], pizzas: Pizza[]): number => {
   const orderItems = getOrderItems(items, pizzas);
   return orderItems.reduce((total, item) => total + item.finalPrice, 0);
