@@ -32,7 +32,11 @@ export const OrderConfirmationModal = ({
   const dispatch = useAppDispatch();
   const [addOrder] = useAddOrderMutation();
 
+  // Creates a new order when user confirms checkout
+  // We build the order object with all the calculated totals and save it via the API
   const handleConfirm = async () => {
+    // Generate unique order ID and build order object with all the cart items
+    // The order includes subtotal, discount amount, and final total that were already calculated
     const order = {
       id: generateOrderId(),
       items: orderItems,
@@ -43,8 +47,11 @@ export const OrderConfirmationModal = ({
       status: 'confirmed' as const,
     };
 
+    // Save order to localStorage via the API mutation
     await addOrder(order);
+    // Clear the cart since order is now confirmed
     dispatch(clearCart());
+    // Show success toast with order ID
     dispatch(
       addToast({
         type: 'success',
