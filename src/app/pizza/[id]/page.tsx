@@ -15,7 +15,6 @@ import { cn } from '@/utils/cn';
 import { fadeUpItem, staggerContainer } from '@/utils/animations';
 import { Pizza } from '@/types';
 
-// Related Pizza Card Component
 interface RelatedPizzaCardProps {
   pizza: Pizza;
 }
