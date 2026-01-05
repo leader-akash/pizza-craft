@@ -61,9 +61,11 @@ export default function AddPizzaPage() {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<PizzaFormData>({
     resolver: zodResolver(pizzaSchema),
+    mode: 'onChange', // Show errors in real-time as user types
     defaultValues: {
       name: '',
       price: 0,
@@ -112,6 +114,7 @@ export default function AddPizzaPage() {
         message: 'Pizza created successfully',
         duration: 2000,
       }));
+      reset();
       // router.push('/');
     } catch (error) {
       console.error('Error adding pizza:', error);
