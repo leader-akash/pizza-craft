@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { X, ShoppingBag, Trash2 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { formatCurrency } from '@/utils/format';
@@ -141,11 +142,12 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                         >
                           <div className="flex gap-4 p-4">
                             {/* Image */}
-                            <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-slate-700/50">
-                              <img
+                            <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-slate-700/50">
+                              <Image
                                 src={item.pizza.imageUrl}
                                 alt={item.pizza.name}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                               />
                             </div>
 

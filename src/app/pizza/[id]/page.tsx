@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, Minus, Leaf, Sparkles } from 'lucide-react';
@@ -33,10 +34,11 @@ const RelatedPizzaCard = ({ pizza }: RelatedPizzaCardProps) => {
         {/* Image */}
         <Link href={`/pizza/${pizza.id}`}>
           <div className="relative aspect-[4/3] overflow-hidden cursor-pointer">
-            <img
+            <Image
               src={pizza.imageUrl}
               alt={pizza.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
           </div>
@@ -150,7 +152,7 @@ export default function PizzaDetailsPage() {
         <div className="text-center">
           <p className="text-4xl mb-4">🍕</p>
           <h1 className="text-2xl font-bold text-white mb-2">Pizza Not Found</h1>
-          <p className="text-slate-400 mb-6">The pizza you're looking for doesn't exist.</p>
+          <p className="text-slate-400 mb-6">The pizza you&apos;re looking for doesn&apos;t exist.</p>
           <Button onClick={() => router.push('/')}>Back to Menu</Button>
         </div>
       </div>
@@ -179,10 +181,11 @@ export default function PizzaDetailsPage() {
             animate="show"
             className="relative aspect-square rounded-2xl overflow-hidden border border-slate-700/50"
           >
-            <img
+            <Image
               src={pizza.imageUrl}
               alt={pizza.name}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {pizza.isPopular && (

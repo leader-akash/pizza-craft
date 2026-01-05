@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import React from 'react';
 
 // Mock global fetch for RTK Query - must be set up before any imports
 const mockFetch = jest.fn(() =>
@@ -20,74 +21,42 @@ if (typeof window !== 'undefined') {
 
 // Mock framer-motion
 jest.mock('framer-motion', () => {
-  const React = require('react');
-  
-  // Filter out motion-specific props
-  const filterMotionProps = (props) => {
-    const {
-      initial,
-      animate,
-      exit,
-      transition,
-      whileHover,
-      whileTap,
-      whileFocus,
-      whileDrag,
-      whileInView,
-      viewport,
-      layout,
-      layoutId,
-      layoutDependency,
-      layoutRoot,
-      drag,
-      dragConstraints,
-      dragElastic,
-      dragMomentum,
-      dragPropagation,
-      dragDirectionLock,
-      dragTransition,
-      onDrag,
-      onDragStart,
-      onDragEnd,
-      animateProps,
-      ...domProps
-    } = props;
-    return domProps;
-  };
-
   const createMotionComponent = (element) => {
-    return React.forwardRef((props, ref) => {
+    const MotionComponent = React.forwardRef((props, ref) => {
       // Filter out all motion-specific props to prevent React warnings
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
-        initial,
-        animate,
-        exit,
-        transition,
-        whileHover,
-        whileTap,
-        whileFocus,
-        whileDrag,
-        whileInView,
-        viewport,
-        layout,
-        layoutId,
-        layoutDependency,
-        layoutRoot,
-        drag,
-        dragConstraints,
-        dragElastic,
-        dragMomentum,
-        dragPropagation,
-        dragDirectionLock,
-        dragTransition,
-        onDrag,
-        onDragStart,
-        onDragEnd,
-        animateProps,
+        initial: _initial,
+        animate: _animate,
+        exit: _exit,
+        transition: _transition,
+        whileHover: _whileHover,
+        whileTap: _whileTap,
+        whileFocus: _whileFocus,
+        whileDrag: _whileDrag,
+        whileInView: _whileInView,
+        viewport: _viewport,
+        layout: _layout,
+        layoutId: _layoutId,
+        layoutDependency: _layoutDependency,
+        layoutRoot: _layoutRoot,
+        drag: _drag,
+        dragConstraints: _dragConstraints,
+        dragElastic: _dragElastic,
+        dragMomentum: _dragMomentum,
+        dragPropagation: _dragPropagation,
+        dragDirectionLock: _dragDirectionLock,
+        dragTransition: _dragTransition,
+        onDrag: _onDrag,
+        onDragStart: _onDragStart,
+        onDragEnd: _onDragEnd,
+        animateProps: _animateProps,
         ...cleanProps
       } = props;
       return React.createElement(element, { ...cleanProps, ref });
     });
+    MotionComponent.displayName = `MotionComponent(${element})`;
+    return MotionComponent;
   };
 
   return {
@@ -108,10 +77,11 @@ jest.mock('framer-motion', () => {
 
 // Mock next/image
 jest.mock('next/image', () => {
-  const React = require('react');
+  const ImageComponent = (props: React.ImgHTMLAttributes<HTMLImageElement>) => React.createElement('img', props);
+  ImageComponent.displayName = 'Image';
   return {
     __esModule: true,
-    default: (props) => React.createElement('img', props),
+    default: ImageComponent,
   };
 });
 

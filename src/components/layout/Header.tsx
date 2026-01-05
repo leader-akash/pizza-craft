@@ -34,8 +34,12 @@ export const Header = () => {
   // Listen to cart opener state
   useEffect(() => {
     if (shouldOpenCart) {
-      setIsCartOpen(true);
-      dispatch(closeCart());
+      // Use setTimeout to avoid calling setState synchronously in effect
+      const timer = setTimeout(() => {
+        setIsCartOpen(true);
+        dispatch(closeCart());
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [shouldOpenCart, dispatch]);
 

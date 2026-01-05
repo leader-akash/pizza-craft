@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   Package,
@@ -16,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Button, ConfirmModal } from '@/components/common';
 import { useGetOrdersQuery, useRemoveOrderMutation, useClearAllOrdersMutation } from '@/store/api/orderApi';
-import { formatCurrency, formatRelativeTime, formatDate } from '@/utils/format';
+import { formatCurrency, formatRelativeTime } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import { staggerContainer } from '@/utils/animations';
 import { OrderStatus } from '@/types';
@@ -134,7 +135,7 @@ export default function OrdersPage() {
           <div className="text-center py-12">
             <p className="text-6xl mb-4">📋</p>
             <h2 className="text-2xl font-bold text-white mb-2">No orders yet</h2>
-            <p className="text-slate-400 mb-6">You haven't placed any orders yet.</p>
+            <p className="text-slate-400 mb-6">You haven&apos;t placed any orders yet.</p>
             <Link href="/">
               <Button variant="primary">Start Ordering</Button>
             </Link>
@@ -189,11 +190,14 @@ export default function OrdersPage() {
                           className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50"
                         >
                           <div className="flex items-center gap-3">
-                            <img
-                              src={item.pizza.imageUrl}
-                              alt={item.pizza.name}
-                              className="w-12 h-12 rounded-lg object-cover"
-                            />
+                            <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                              <Image
+                                src={item.pizza.imageUrl}
+                                alt={item.pizza.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
                             <div>
                               <p className="font-semibold text-white">{item.pizza.name}</p>
                               <p className="text-sm text-slate-400">

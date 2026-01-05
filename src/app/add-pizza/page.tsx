@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -332,7 +332,7 @@ export default function AddPizzaPage() {
                           : 'border-slate-700 hover:border-slate-600'
                       )}
                     >
-                      <img src={img} alt={`Pizza ${i + 1}`} className="w-full h-full object-cover" />
+                      <Image src={img} alt={`Pizza ${i + 1}`} fill className="object-cover" />
                     </motion.button>
                   ))}
                 </div>
@@ -347,10 +347,11 @@ export default function AddPizzaPage() {
               </div>
               <div className="relative lg:h-[70%] rounded-xl overflow-hidden border border-slate-700 bg-slate-900/50">
                 {imageUrl ? (
-                  <img
+                  <Image
                     src={imageUrl}
                     alt={name || 'Pizza Preview'}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-500">
