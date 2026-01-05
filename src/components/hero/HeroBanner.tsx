@@ -194,7 +194,7 @@ export const HeroBanner = () => {
               'transition-all duration-300 cursor-pointer'
             )}
           >
-            Today's Specials ✨
+            Today&#39;s Specials ✨
           </motion.button>
         </motion.div>
 

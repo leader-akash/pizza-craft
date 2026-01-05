@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, Leaf, Sparkles, Eye } from 'lucide-react';
@@ -77,14 +78,14 @@ export const PizzaCard = ({ pizza, index = 0 }: PizzaCardProps) => {
         >
           {/* Image Container */}
           <div className="relative aspect-[4/3] overflow-hidden shrink-0">
-            <img
+            <Image
               src={pizza.imageUrl}
               alt={pizza.name}
+              fill
               className={cn(
-                'w-full h-full object-cover transition-all duration-700',
+                'object-cover transition-all duration-700',
                 'group-hover:scale-110'
               )}
-              loading="lazy"
             />
 
             {/* Overlay gradient */}

@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, Pizza, DollarSign, Sparkles, ChevronDown, Clock, Award, Flame } from 'lucide-react';
+import { TrendingUp, Users, Pizza, DollarSign, Sparkles } from 'lucide-react';
 import { PizzaFilters, PizzaList } from '@/components/pizza';
 import { PriceChart, OrderPieChart } from '@/components/charts';
 import { Badge } from '@/components/common';
@@ -24,27 +23,6 @@ export default function Dashboard() {
   const filteredPizzas = getFilteredPizzas(pizzas, filters);
   const cartTotal = getFinalTotal(cartItems, pizzas);
 
-  // Generate random values only on client to avoid hydration mismatch
-  const [pizzaAnimations, setPizzaAnimations] = useState<Array<{
-    rotate: number;
-    duration: number;
-    delay: number;
-  }>>([]);
-
-  useEffect(() => {
-    // Generate random values only on client side
-    setPizzaAnimations(
-      Array.from({ length: 8 }, () => ({
-        rotate: Math.random() * 360,
-        duration: 8 + Math.random() * 4,
-        delay: Math.random() * 2,
-      }))
-    );
-  }, []);
-
-  const scrollToMenu = () => {
-    document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const promotionalBadgeClass = 'bg-white/20 text-white border-transparent '
 

@@ -28,7 +28,7 @@ const createTestStore = (preloadedState = {}) => {
 };
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  preloadedState?: any;
+  preloadedState?: Record<string, unknown>;
   store?: ReturnType<typeof createTestStore>;
 }
 

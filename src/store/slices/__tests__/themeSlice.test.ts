@@ -11,7 +11,7 @@ describe('themeSlice', () => {
       removeItem: jest.fn(),
       clear: jest.fn(),
     };
-    global.localStorage = localStorageMock as any;
+    global.localStorage = localStorageMock as typeof localStorage;
     jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(localStorageMock.removeItem);
 
     // Mock document.documentElement
